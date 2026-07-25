@@ -11,7 +11,22 @@ const invoiceRoutes = require("./routes/invoiceRoutes");
 
 connectDB();
 
+const express = require("express");
 const app = express();
+
+app.use(cors({
+
+    origin: [
+
+        "http://localhost:5500",
+
+        "https://vendor-invoice-client.vercel.app"
+
+    ]
+
+}));
+
+app.use(express.json());
 
 app.use(cors());
 
@@ -27,8 +42,4 @@ app.use("/api/invoices", invoiceRoutes);
 
 const PORT = process.env.PORT || 8443;
 
-app.listen(PORT, () => {
-
-    console.log(`Server running on port ${PORT}`);
-
-});
+module.exports = app;
