@@ -208,30 +208,27 @@ const sendInvoiceEmail = async (vendorName, invoices, createdAt) => {
 // =========================
 
 const submitInvoices = async (req, res) => {
-
     try {
-        // 1. Simpan ke database
         const batch = new InvoiceBatch(req.body);
         await batch.save();
 
-        // 2. Kirim email (non-blocking — tidak gagalkan response kalau email error)
-        sendInvoiceEmail(batch.vendorName, batch.invoices, batch.createdAt)
-            .then(() => console.log("Email sent for batch:", batch._id))
-            .catch((err) => console.error("Email failed (non-critical):", err.message));
+        // Sementara: blocking untuk debug
+        try {
+            await sendInvoiceEmail(batch.vendorName, batch.invoices, batch.createdAt);
+            console.log("Email sent OK");
+        } catch (emailErr) {
+            console.error("Email error detail:", emailErr.message);
+        }
 
         res.status(201).json({
             success: true,
-            message: "Invoices berhasil disimpan dan email notifikasi sedang dikirim.",
+            message: "Invoices berhasil disimpan.",
         });
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({
-            success: false,
-            message: err.message,
-        });
+        res.status(500).json({ success: false, message: err.message });
     }
-
 };
 
 // =========================
