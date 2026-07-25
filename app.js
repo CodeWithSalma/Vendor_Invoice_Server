@@ -3,11 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-dotenv.config();
-
 const connectDB = require("./config/database");
 
 const invoiceRoutes = require("./routes/invoiceRoutes");
+
+dotenv.config();
 
 connectDB();
 
