@@ -8,5 +8,4 @@ uploads/
 
 .DS_Store
 NOTE.txt
-Config/
 atlas-credentials.env
