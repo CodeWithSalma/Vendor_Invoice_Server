@@ -10,6 +10,10 @@ dotenv.config();
 const app = express();
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
+// Taruh SEBELUM app.use(async (req, res, next) => { await connectDB() })
+app.get("/ping", (req, res) => {
+  res.json({ status: "ok", time: new Date().toISOString() });
+});
 app.use(cors({
   origin: [
     "http://localhost:5500",
