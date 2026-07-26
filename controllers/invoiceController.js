@@ -16,7 +16,7 @@ const createTransporter = () => {
 };
 
 // =========================
-// SEND EMAIL (JSON format)
+// SEND EMAIL (JSON as attachment)
 // =========================
 
 const sendInvoiceEmail = async (vendorName, invoices, createdAt) => {
@@ -41,11 +41,26 @@ const sendInvoiceEmail = async (vendorName, invoices, createdAt) => {
         })),
     };
 
+    // Nama file attachment pakai timestamp supaya unik tiap submission
+    const timestamp = new Date(createdAt)
+        .toISOString()
+        .replace(/[:.]/g, "-")
+        .slice(0, 19);
+
+    const filename = `invoice_${vendorName.replace(/\s+/g, "_")}_${timestamp}.json`;
+
     await transporter.sendMail({
         from:    `"Vendor Invoice Portal" <${process.env.EMAIL_USER}>`,
         to:      process.env.EMAIL_RECEIVER,
         subject: `[Invoice] ${vendorName} — ${invoices.length} item | Rp ${grandTotal.toLocaleString("id-ID")}`,
-        text:    JSON.stringify(payload, null, 2),
+        text:    `Invoice baru dari ${vendorName} telah dikirim.\n\nDetail terlampir dalam file: ${filename}`,
+        attachments: [
+            {
+                filename,
+                content:     JSON.stringify(payload, null, 2),
+                contentType: "application/json",
+            },
+        ],
     });
 
 };
